@@ -1421,32 +1421,23 @@ def encoding():
 
 @app.route("/bytes/<int:n>")
 def random_bytes(n):
-    """Returns n random bytes generated with given seed
-    ---
-    tags:
-      - Dynamic data
-    parameters:
-      - in: path
-        name: n
-        type: int
-    produces:
-      - application/octet-stream
-    responses:
-      200:
-        description: Bytes.
-    """
-
-    n = min(n, 100 * 1024)  # set 100KB limit
+    n = min(n, 1* 1000 * 1000 * 1024)  # limit to 1GB
 
     params = CaseInsensitiveDict(request.args.items())
     if "seed" in params:
         random.seed(int(params["seed"]))
 
-    response = make_response()
+    def generate():
+        chunk_size = 1024 * 64  # 64KB
+        remaining = n
+        while remaining > 0:
+            size = min(chunk_size, remaining)
+            yield bytes(random.randint(0, 255) for _ in range(size))
+            remaining -= size
 
-    # Note: can't just use os.urandom here because it ignores the seed
-    response.data = bytearray(random.randint(0, 255) for i in range(n))
-    response.content_type = "application/octet-stream"
+    response = Response(generate(), content_type="application/octet-stream")
+    response.headers['Transfer-Encoding'] = 'chunked'# Explicitly setting Transfer-Encoding header for chunked transfer
+    response.headers['Connection'] = 'keep-alive'  # Ensure connection stays open for the transfer
     return response
 
 
