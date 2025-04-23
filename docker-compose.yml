@@ -1,6 +1,9 @@
+version: "3.8"
+
 services:
     httpbin:
       build: '.'
+      platform: linux/amd64
       ports:
         - '80:80'
       image: mbhaskar98/large-file-httpbin:latest
