@@ -1,6 +1,6 @@
-version: '2'
 services:
     httpbin:
       build: '.'
       ports:
         - '80:80'
+      image: mbhaskar98/large-file-httpbin:latest
