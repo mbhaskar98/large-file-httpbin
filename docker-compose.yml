@@ -1,9 +1,19 @@
 version: "3.8"
 
+x-common-large-file-httpbin: &common-large-file-httpbin
+  platform: linux/amd64
+  ports:
+    - "80:80"
+
 services:
-    httpbin:
-      build: '.'
-      platform: linux/amd64
-      ports:
-        - '80:80'
-      image: mbhaskar98/large-file-httpbin:latest
+  # Local build
+  large-file-httpbin-local:
+    <<: *common-large-file-httpbin
+    build:
+      context: .
+    image: large-file-httpbin-local
+
+  # Remote pull
+  large-file-httpbin-remote:
+    <<: *common-large-file-httpbin
+    image: mbhaskar98/large-file-httpbin:latest

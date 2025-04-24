@@ -1435,8 +1435,7 @@ def random_bytes(n):
       200:
         description: Bytes.
     """
-    
-    n = min(n, 1 * 1000 * 1000 * 1024)  # limit to 1GB
+    n = min(n, 100 * 1000 * 1000 * 1024)  # limit to 100GB
 
     params = CaseInsensitiveDict(request.args.items())
     if "seed" in params:
